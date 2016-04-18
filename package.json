@@ -25,7 +25,8 @@
   "homepage": "https://github.com/DerHowie/react-template#readme",
   "dependencies": {
     "react": "^15.0.1",
-    "react-dom": "^15.0.1"
+    "react-dom": "^15.0.1",
+    "react-router": "^2.3.0"
   },
   "devDependencies": {
     "ava": "^0.14.0",

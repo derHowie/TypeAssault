@@ -1,7 +1,7 @@
 require('./styles/main.scss');
 import React from "react";
 import ReactDOM from 'react-dom';
-import App from './components/App.jsx';
+import routes from './config/routes.jsx';
 
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(routes, document.getElementById('app'));
