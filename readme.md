@@ -19,7 +19,7 @@ npm production
 ```
 
 ###run tests:
-> ava
+> xo/ava
 ```
 npm test
 ```
