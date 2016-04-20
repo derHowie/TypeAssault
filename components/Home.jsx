@@ -1,11 +1,11 @@
 import React from 'react';
 
-class Home extends React.Component {
+var Home = React.createClass({
   render() {
     return (
       <div>HOME!</div>
     )
   }
-}
+});
 
 export default Home;

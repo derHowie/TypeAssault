@@ -7,7 +7,7 @@ import Home from '../components/Home.jsx';
 var routes = (
   <Router history={hashHistory}>
     <Route path='/' component={App}>
-      <IndexRoute component={Home}/>
+      <IndexRoute component={Home} />
     </Route>
   </Router>
 );
