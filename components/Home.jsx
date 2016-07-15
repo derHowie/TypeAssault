@@ -1,11 +1,11 @@
 import React from 'react';
 
-var Home = React.createClass({
+class Game extends React.Component {
   render() {
     return (
-      <div>HOME!</div>
+      <div id='title'>GAME TITLE</div>
     )
   }
-});
+}
 
-export default Home;
+export default Game;

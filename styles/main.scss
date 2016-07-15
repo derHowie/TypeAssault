@@ -3,3 +3,11 @@
     color: blue;
   }
 }
+
+#gameDiv {
+  height: 800px;
+  width: 500px;
+  margin: 0 auto;
+  display: block;
+  background: linear-gradient(30deg, rgb(10, 0, 42), rgb(30, 30, 30) 80%);
+}

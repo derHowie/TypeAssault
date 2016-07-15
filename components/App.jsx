@@ -1,14 +1,13 @@
 import React from 'react';
 
-var App = React.createClass({
+class App extends React.Component {
   render() {
     return (
       <div>
-        <p>App Container</p>
         {this.props.children}
       </div>
     )
   }
-});
+};
 
 export default App;
