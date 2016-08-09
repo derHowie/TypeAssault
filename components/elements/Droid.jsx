@@ -9,6 +9,7 @@ class Droid extends React.Component {
     this.positionDroid = this.positionDroid.bind(this);
     this.hypotenuse = this.hypotenuse.bind(this);
     this.launch = this.launch.bind(this);
+    this.checkForDefeat = this.checkForDefeat.bind(this);
   }
 
   componentDidMount() {
@@ -50,8 +51,22 @@ class Droid extends React.Component {
       left: '250px'
     }, {
       easing: 'linear',
-      duration: this.hypotenuse() * 18
+      duration: this.hypotenuse() * 18,
+      step: this.checkForDefeat
     });
+  }
+
+  checkForDefeat() {
+    var containerCoords = {
+      x: parseFloat(this.$container.css('left'), 10),
+      y: parseFloat(this.$container.css('top'), 10)
+    };
+
+    if (containerCoords.x > 245 && containerCoords.x < 255) {
+      if (containerCoords.y > 640) {
+        this.props.endGame();
+      }
+    }
   }
 
   render() {
@@ -70,7 +85,8 @@ Droid.propTypes = {
   launchTime: React.PropTypes.number.isRequired,
   xCoord: React.PropTypes.number.isRequired,
   yCoord: React.PropTypes.number.isRequired,
-  enemyIndex: React.PropTypes.number.isRequired
+  enemyIndex: React.PropTypes.number.isRequired,
+  endGame: React.PropTypes.func.isRequired
 };
 
 export default Droid;

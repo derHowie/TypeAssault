@@ -89,6 +89,7 @@ class Pulser extends React.Component {
           enemyIndex={newDroidIndex}
           containerIdentifier={newDroid.containerIdentifier}
           letterArray={newDroid.letterArray}
+          endGame={this.props.endGame}
           key={'p' + newDroidIndex.toString()}/>
       );
       this.props.addEnemy(newDroid);
@@ -115,7 +116,8 @@ Pulser.propTypes = {
   reduceLetters: React.PropTypes.func.isRequired,
   grabEnemies: React.PropTypes.func.isRequired,
   addEnemy: React.PropTypes.func.isRequired,
-  concludePath: React.PropTypes.func.isRequired
+  concludePath: React.PropTypes.func.isRequired,
+  endGame: React.PropTypes.func.isRequired
 };
 
 export default Pulser;

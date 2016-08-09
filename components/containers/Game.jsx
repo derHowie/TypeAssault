@@ -14,10 +14,12 @@ class Game extends React.Component {
   constructor() {
     super();
     this.state = {
-      enemies: []
+      enemies: [],
+      waveLaunching: false,
+      gameOver: false
     };
     this.currentEnemy = null;
-    this.currentEnemyIndex = -1;
+    this.currentEnemyIndex = null;
     this.letters = 'abcdefghijklmnopqrstuvwxyz';
     this.waveCount = 0;
     this.score = 0;
@@ -25,18 +27,19 @@ class Game extends React.Component {
     this.currentStreak = 0;
     this.highStreak = 0;
     this.clock = 0;
-    this.waveLaunching = false;
+    this.messageType = 'startGame';
 
     this.launchWave = this.launchWave.bind(this);
     this.populateWave = this.populateWave.bind(this);
     this.reduceLetters = this.reduceLetters.bind(this);
     this.findWord = this.findWord.bind(this);
-    this.nextWave = this.nextWave.bind(this);
+    this.queueNextWave = this.queueNextWave.bind(this);
     this.removeEnemy = this.removeEnemy.bind(this);
     this.addEnemy = this.addEnemy.bind(this);
     this.concludePath = this.concludePath.bind(this);
     this.grabEnemyContainer = this.grabEnemyContainer.bind(this);
     this.grabEnemies = this.grabEnemies.bind(this);
+    this.endGame = this.endGame.bind(this);
 
     this.TypeSwitch = new TypeSwitch({stubbornMode: true});
     this.TypeSwitch.on('correct', () => {
@@ -49,7 +52,7 @@ class Game extends React.Component {
         return !enemy.isDead;
       });
       if (remainingEnemies.length === 0) {
-        this.nextWave();
+        this.queueNextWave();
       } else {
         setTimeout(() => {
           document.addEventListener('keypress', this.findWord, false);
@@ -59,7 +62,9 @@ class Game extends React.Component {
   }
 
   launchWave() {
-    this.waveLaunching = true;
+    this.setState({
+      waveLaunching: true
+    });
     document.addEventListener('keypress', this.findWord, false);
     this.TypeSwitch.start('');
     this.TypeSwitch.pauseGame();
@@ -86,6 +91,7 @@ class Game extends React.Component {
             enemyIndex={index}
             containerIdentifier={newEnemy.containerIdentifier}
             letterArray={newEnemy.letterArray}
+            endGame={this.endGame}
             key={this.waveCount.toString() + index}/>
         );
       } else if (enemy.type === 'pulser') {
@@ -105,6 +111,7 @@ class Game extends React.Component {
             grabEnemies={this.grabEnemies}
             addEnemy={this.addEnemy}
             concludePath={this.concludePath}
+            endGame={this.endGame}
             key={this.waveCount.toString() + index}/>
         );
       }
@@ -142,12 +149,32 @@ class Game extends React.Component {
     });
   }
 
-  nextWave() {
-    this.setState({
-      enemies: []
-    });
+  queueNextWave() {
+    if (this.state.gameOver) {
+      this.currentEnemy = null;
+      this.currentEnemyIndex = null;
+      this.letters = 'abcdefghijklmnopqrstuvwxyz';
+      this.waveCount = 0;
+      this.score = 0;
+      this.accuracy = null;
+      this.currentStreak = 0;
+      this.highStreak = 0;
+      this.clock = 0;
+    }
+
     this.waveCount++;
-    this.launchWave();
+    this.messageType = 'nextWave';
+    this.setState({
+      waveLaunching: false
+    });
+    setTimeout(() => {
+      this.setState({
+        enemies: [],
+        waveLaunching: true,
+        gameOver: false
+      });
+      this.launchWave();
+    }, 1000);
   }
 
   removeEnemy() {
@@ -188,12 +215,12 @@ class Game extends React.Component {
     this.setState({
       enemies: adjustedEnemyArray
     });
-    // needs work positioning addEventListener
+
     var remainingEnemies = this.state.enemies.filter((enemy) => {
       return !enemy.isDead;
     });
     if (!remainingEnemies.length) {
-      this.nextWave();
+      this.queueNextWave();
     }
   }
 
@@ -205,8 +232,23 @@ class Game extends React.Component {
     return this.state.enemies;
   }
 
+  endGame() {
+    document.removeEventListener('keypress', this.findWord);
+    this.messageType = 'gameOver';
+    this.setState({
+      enemies: [],
+      waveLaunching: false,
+      gameOver: true
+    });
+  }
+
   render() {
-    var message = this.waveLaunching ? null : <Message launchWave={this.launchWave}/>;
+    var message = this.state.waveLaunching ? null : (
+      <Message
+        queueNextWave={this.queueNextWave}
+        messageType={this.messageType}
+        count={this.waveCount}/>
+    );
     var enemies = this.state.enemies.map((enemy) => {
       return enemy.isDead ? null : enemy.component;
     });
@@ -214,11 +256,11 @@ class Game extends React.Component {
       <div id="gameWrapper">
         <TransitionGroup>
           {message}
+          {enemies}
           <Player
             TypeSwitch={this.TypeSwitch}
             grabTarget={this.grabEnemyContainer}
             removeEnemy={this.removeEnemy}/>
-          {enemies}
         </TransitionGroup>
       </div>
     )

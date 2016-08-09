@@ -67,7 +67,7 @@ class Projectile extends React.Component {
       <i
         className="fa fa-circle explosion"
         data-explosion={this.rocketIndex.toString() + i}
-        key={i}
+        key={'r' + i}
       />
       adjustedExplosionArray.push(explosion);
     }
