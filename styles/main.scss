@@ -5,9 +5,74 @@
 }
 
 #gameDiv {
-  height: 800px;
+  height: 700px;
   width: 500px;
   margin: 0 auto;
   display: block;
   background: linear-gradient(30deg, rgb(10, 0, 42), rgb(30, 30, 30) 80%);
+  position: relative;
+  overflow: hidden;
+}
+
+#startContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  text-align: center;
+  margin: 0 auto;
+}
+
+#player {
+  color: rgb(0, 145, 255);
+  position: absolute;
+  top: 650px;
+  font-size: 34px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-90deg);
+  z-index: 2;
+}
+
+.word {
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.letter {
+  display: inline;
+  font-size: 18px;
+}
+
+.droid {
+  color: purple;
+  transform: translateX(-50%);
+}
+
+.pulser {
+  color: green;
+  font-size: 30px;
+  transform: translateX(-50%);
+}
+
+.enemyContainer {
+  position: absolute;
+}
+
+.projectile {
+  color: red;
+  font-size: 10px;
+  position: absolute;
+  transform: translateX(-50%) rotate(-45deg);
+  top: 670px;
+  left: 50%;
+}
+
+.explosion {
+  font-size: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-50%);
 }

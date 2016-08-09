@@ -24,10 +24,12 @@
   },
   "homepage": "https://github.com/DerHowie/react-template#readme",
   "dependencies": {
-    "react": "^15.0.1",
+    "axios": "latest",
+    "react": "^15.3.0",
+    "react-addons-transition-group": "^15.3.0",
     "react-dom": "^15.0.1",
     "react-router": "^2.3.0",
-    "axios": "latest"
+    "type-switch": "0.0.9"
   },
   "devDependencies": {
     "ava": "^0.14.0",
