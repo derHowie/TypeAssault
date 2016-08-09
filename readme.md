@@ -1,25 +1,2 @@
-##react-boilerplate
-
-###features:
-* ES6 => ES5 with Webpack/babel-loader
-* handles .scss files with Webpack
-* handles .jsx files with Webpack
-* contains react-router boilerplate
-
-###dev-server:
-> localhost:3333
-```
-npm start
-```
-
-###generate production code:
-> /dist folder
-```
-npm production
-```
-
-###run tests:
-> xo/ava
-```
-npm test
-```
+##TypeAssault
+A typing game powered by [type-switch](https://github.com/DerHowie/type-switch) and react.js composed purely of DOM elements.
