@@ -19,9 +19,13 @@ class Droid extends React.Component {
     }, this.props.launchTime);
   }
 
-  componentWillLeave() {
+  componentWillLeave(callback) {
     this.$container.stop();
-    this.$container.fadeOut(500, 'linear');
+    this.$container.fadeOut({
+      duration: 400,
+      easing: 'linear',
+      complete: callback
+    });
   }
 
   positionDroid() {

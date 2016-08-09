@@ -31,6 +31,7 @@ class Game extends React.Component {
     this.populateWave = this.populateWave.bind(this);
     this.reduceLetters = this.reduceLetters.bind(this);
     this.findWord = this.findWord.bind(this);
+    this.nextWave = this.nextWave.bind(this);
     this.removeEnemy = this.removeEnemy.bind(this);
     this.addEnemy = this.addEnemy.bind(this);
     this.concludePath = this.concludePath.bind(this);
@@ -44,9 +45,16 @@ class Game extends React.Component {
     });
     this.TypeSwitch.on('complete', () => {
       this.removeEnemy();
-      setTimeout(() => {
-        document.addEventListener('keypress', this.findWord, false);
+      var remainingEnemies = this.state.enemies.filter((enemy) => {
+        return !enemy.isDead;
       });
+      if (remainingEnemies.length === 0) {
+        this.nextWave();
+      } else {
+        setTimeout(() => {
+          document.addEventListener('keypress', this.findWord, false);
+        });
+      }
     });
   }
 
@@ -59,7 +67,7 @@ class Game extends React.Component {
   }
 
   populateWave() {
-    var waveData = waves(10);
+    var waveData = waves(this.waveCount);
     var possibleWords = [words.oneSyllable, words.twoSyllable];
     var newWave = waveData.map((enemy, index) => {
       var newEnemy = {};
@@ -78,7 +86,7 @@ class Game extends React.Component {
             enemyIndex={index}
             containerIdentifier={newEnemy.containerIdentifier}
             letterArray={newEnemy.letterArray}
-            key={index}/>
+            key={this.waveCount.toString() + index}/>
         );
       } else if (enemy.type === 'pulser') {
         var wordString = this.reduceLetters(possibleWords[1]);
@@ -97,7 +105,7 @@ class Game extends React.Component {
             grabEnemies={this.grabEnemies}
             addEnemy={this.addEnemy}
             concludePath={this.concludePath}
-            key={index}/>
+            key={this.waveCount.toString() + index}/>
         );
       }
       return newEnemy;
@@ -134,6 +142,14 @@ class Game extends React.Component {
     });
   }
 
+  nextWave() {
+    this.setState({
+      enemies: []
+    });
+    this.waveCount++;
+    this.launchWave();
+  }
+
   removeEnemy() {
     this.letters = this.letters + this.currentEnemy.word.charAt(0);
     helpers.changeLetterColor(this.currentEnemy.wordIdentifier, this.TypeSwitch.getGameStats().currentIndex);
@@ -158,7 +174,9 @@ class Game extends React.Component {
   }
 
   concludePath(index) {
-    if (this.currentEnemy && this.state.enemies[index].word === this.currentEnemy.word) {
+    var tiredEnemy = this.state.enemies[index];
+    this.letters = this.letters + tiredEnemy.word.charAt(0);
+    if (this.currentEnemy && tiredEnemy.word === this.currentEnemy.word) {
       this.currentEnemy = null;
       this.currentEnemyIndex = null;
       this.TypeSwitch.resetGame();
@@ -170,6 +188,13 @@ class Game extends React.Component {
     this.setState({
       enemies: adjustedEnemyArray
     });
+    // needs work positioning addEventListener
+    var remainingEnemies = this.state.enemies.filter((enemy) => {
+      return !enemy.isDead;
+    });
+    if (!remainingEnemies.length) {
+      this.nextWave();
+    }
   }
 
   grabEnemyContainer() {

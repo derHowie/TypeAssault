@@ -23,10 +23,14 @@ class Pulser extends React.Component {
     }, this.props.launchTime);
   }
 
-  componentWillLeave() {
+  componentWillLeave(callback) {
     clearInterval(this.spawningInterval);
     this.$container.stop();
-    this.$container.fadeOut(500, 'linear');
+    this.$container.fadeOut({
+      duration: 400,
+      easing: 'linear',
+      complete: callback
+    });
   }
 
   positionPulser() {
@@ -52,38 +56,43 @@ class Pulser extends React.Component {
     });
     this.spawningInterval = setInterval(() => {
       this.spawnDroid();
-    }, 3250);
+    }, 3900);
   }
 
   spawnDroid() {
-    var spawningElementLocation = {
-      x: parseInt(this.$container.css('left'), 10),
-      y: parseInt(this.$container.css('top'), 10)
-    };
-    var newDroidOrigin = {
-      x: spawningElementLocation.x > 250 ? spawningElementLocation.x - 20 : spawningElementLocation.x + 20,
-      y: spawningElementLocation.y - 45
-    };
-    var possibleWords = words.oneSyllable;
-    var newDroidIndex = this.props.grabEnemies().length;
-    var newDroid = {};
-    newDroid.componentIdentifier = '[data-enemy=\"' + newDroidIndex + '\"]';
-    newDroid.wordIdentifier = '[data-word=\"' + newDroidIndex + '\"]';
-    newDroid.containerIdentifier = '[data-container=\"' + newDroidIndex + '\"]';
-    newDroid.isDead = false;
-    newDroid.word = this.props.reduceLetters(possibleWords);
-    newDroid.letterArray = helpers.createWord(newDroid.word);
-    newDroid.component = (
-      <Droid
-        launchTime={0}
-        xCoord={newDroidOrigin.x}
-        yCoord={newDroidOrigin.y}
-        enemyIndex={newDroidIndex}
-        containerIdentifier={newDroid.containerIdentifier}
-        letterArray={newDroid.letterArray}
-        key={newDroidIndex}/>
-    );
-    this.props.addEnemy(newDroid);
+    var totalEnemies = this.props.grabEnemies().filter((enemy) => {
+      return !enemy.isDead;
+    });
+    if (totalEnemies.length < 26) {
+      var spawningElementLocation = {
+        x: parseInt(this.$container.css('left'), 10),
+        y: parseInt(this.$container.css('top'), 10)
+      };
+      var newDroidOrigin = {
+        x: spawningElementLocation.x > 250 ? spawningElementLocation.x - 20 : spawningElementLocation.x + 20,
+        y: spawningElementLocation.y - 45
+      };
+      var possibleWords = words.oneSyllable;
+      var newDroidIndex = this.props.grabEnemies().length;
+      var newDroid = {};
+      newDroid.componentIdentifier = '[data-enemy=\"' + newDroidIndex + '\"]';
+      newDroid.wordIdentifier = '[data-word=\"' + newDroidIndex + '\"]';
+      newDroid.containerIdentifier = '[data-container=\"' + newDroidIndex + '\"]';
+      newDroid.isDead = false;
+      newDroid.word = this.props.reduceLetters(possibleWords);
+      newDroid.letterArray = helpers.createWord(newDroid.word);
+      newDroid.component = (
+        <Droid
+          launchTime={0}
+          xCoord={newDroidOrigin.x}
+          yCoord={newDroidOrigin.y}
+          enemyIndex={newDroidIndex}
+          containerIdentifier={newDroid.containerIdentifier}
+          letterArray={newDroid.letterArray}
+          key={'p' + newDroidIndex.toString()}/>
+      );
+      this.props.addEnemy(newDroid);
+    }
   }
 
   render() {
