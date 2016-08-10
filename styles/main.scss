@@ -1,6 +1,10 @@
 $blue: rgb(0, 145, 255);
 $gray: rgb(180, 180, 180);
 
+body {
+  background-color: rgb(30, 30, 30);
+}
+
 h1 {
   font-family: 'Space Mono', monospace;
 }
@@ -25,7 +29,7 @@ button {
 #gameDiv {
   height: 800px;
   width: 500px;
-  margin: 0 auto;
+  margin: 50px auto;
   display: block;
   background: linear-gradient(30deg, rgb(10, 0, 42), rgb(0, 0, 0) 80%);
   position: relative;
