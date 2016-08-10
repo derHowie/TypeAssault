@@ -89,7 +89,7 @@ class Player extends React.Component {
       x: 260,
       y: 650
     };
-    var colors = ['red', 'yellow', 'orange'];
+    var colors = ['#e80c7a', '#ff00ff', '#ac0ce8'];
     for (var i = 0; i < 12; i++) {
       var conflagration = (
         <i

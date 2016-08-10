@@ -1,43 +1,101 @@
-#app {
-  p {
-    color: blue;
+$blue: rgb(0, 145, 255);
+$gray: rgb(180, 180, 180);
+
+h1 {
+  font-family: 'Space Mono', monospace;
+}
+
+button {
+  color: #ffffff;
+  font-size: 18px;
+  letter-spacing: 3px;
+  font-family: 'Advent Pro', sans-serif;
+  background-color: #000000;
+  border: 3px solid $gray;
+  border-radius: 2px;
+  padding: 18px;
+  margin-top: 8px;
+  outline: none;
+
+  &:hover {
+    border: 3px solid $blue;
   }
 }
 
 #gameDiv {
-  height: 700px;
+  height: 800px;
   width: 500px;
   margin: 0 auto;
   display: block;
-  background: linear-gradient(30deg, rgb(10, 0, 42), rgb(30, 30, 30) 80%);
+  background: linear-gradient(30deg, rgb(10, 0, 42), rgb(0, 0, 0) 80%);
   position: relative;
   overflow: hidden;
 }
 
+#hud {
+  position: relative;;
+  top: 718px;
+  background-color: rgb(0, 0, 0);
+  text-align: center;
+  z-index: 3;
+  div {
+    display: inline-block;
+    width: 33.33333%;
+  }
+  .statLabel {
+    margin: 10px 0 6px 0;
+  }
+  .stat {
+    font-size: 24px;
+    margin: 0 0 10px 0;
+  }
+}
+
 #messageContainer {
+  width: 40%;
   color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.6);
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(-100%);
+  transform: translateX(-50%) translateY(-70%);
   text-align: center;
   margin: 0 auto;
+  border-radius: 8px;
+  padding: 45px;
   opacity: 0;
+
+  .stat {
+    font-size: 20px;
+  }
+}
+
+.statLabel {
+  color: $gray;
+  font-family: 'Advent Pro', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+.stat {
+  font-family: 'Space Mono', monospace;
+  color: #ffffff;
 }
 
 #player {
-  color: rgb(0, 145, 255);
+  color: $blue;
   position: absolute;
   top: 750px;
-  font-size: 34px;
+  font-size: 38px;
   left: 50%;
   transform: translateX(-50%) rotate(-90deg);
   z-index: 2;
 }
 
 .word {
+  color: $blue;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(30, 30, 30, 0.5);
   padding: 5px;
   border-radius: 4px;
   z-index: 3;
@@ -45,17 +103,19 @@
 
 .letter {
   display: inline;
-  font-size: 18px;
   z-index: 3;
+  font-family: 'Advent Pro', sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
 }
 
 .droid {
-  color: purple;
+  color: rgb(172, 12, 232);
   transform: translateX(-50%);
 }
 
 .pulser {
-  color: green;
+  color: #D0FF0A;
   font-size: 30px;
   transform: translateX(-50%);
 }
@@ -65,7 +125,7 @@
 }
 
 .projectile {
-  color: red;
+  color: #00F94D;
   font-size: 10px;
   position: absolute;
   transform: translateX(-50%) rotate(-45deg);

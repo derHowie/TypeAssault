@@ -5,6 +5,7 @@ class Message extends React.Component {
   constructor(props) {
     super(props);
     this.$container = null;
+    this.clicked = false;
 
     this.handleClick = this.handleClick.bind(this);
   }
@@ -29,15 +30,19 @@ class Message extends React.Component {
   }
 
   handleClick() {
-    this.$container.animate({
-      top: '200px',
-      opacity: 0
-    }, {
-      duration: 600,
-      complete: () => {
-        this.props.queueNextWave();
-      }
-    });
+    //prevents double clicking start button from breaking the game
+    if (!this.clicked) {
+      this.clicked = true;
+      this.$container.animate({
+        top: '200px',
+        opacity: 0
+      }, {
+        duration: 600,
+        complete: () => {
+          this.props.queueNextWave();
+        }
+      });
+    }
   }
 
   render() {
@@ -63,15 +68,21 @@ class Message extends React.Component {
         break;
       case 'gameOver':
         var stats = this.props.grabStats();
-        var score = 'score: ' + stats.score;
-        var accuracy = 'accuracy: ' + stats.accuracy.toString().slice(0, 6) + '%';
-        var longestStreak = 'longest streak: ' + stats.longestStreak;
         message = (
           <div>
             <h1>Game Over</h1>
-            <h3>{score}</h3>
-            <h3>{accuracy}</h3>
-            <h3>{longestStreak}</h3>
+            <div>
+              <p className="statLabel">score</p>
+              <p className="stat">{stats.score}</p>
+            </div>
+            <div>
+              <p className="statLabel">longest streak</p>
+              <p className="stat">{stats.longestStreak}</p>
+            </div>
+            <div>
+              <p className="statLabel">accuracy</p>
+              <p className="stat">{stats.accuracy.toString().slice(0, 5) + '%'}</p>
+            </div>
             <button id="start" onClick={() => {this.handleClick()}}>
               Play Again
             </button>

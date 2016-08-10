@@ -16,7 +16,7 @@ helpers.changeLetterColor = (target, letterIndex) => {
   var wordContainer = document.querySelector(target);
   var letterArray = wordContainer.childNodes;
   for (var i = 0; i < letterIndex; i++) {
-    letterArray[i].style.color = 'white';
+    letterArray[i].style.color = 'rgb(255, 255, 255)';
   }
 };
 

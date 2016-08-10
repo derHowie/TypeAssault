@@ -3,6 +3,7 @@ import React from 'react';
 import TypeSwitch from 'type-switch';
 import helpers from '../../utils/helpers.js';
 import TransitionGroup from 'react-addons-transition-group';
+import Hud from '../elements/Hud.jsx';
 import Message from '../elements/Message.jsx';
 import Player from '../elements/Player.jsx';
 import Droid from '../elements/Droid.jsx';
@@ -18,7 +19,7 @@ class Game extends React.Component {
         score: 0,
         currentStreak: 0,
         longestStreak: 0,
-        accuracy: 'N/A%'
+        accuracy: 100
       },
       enemies: [],
       waveLaunching: false
@@ -175,7 +176,6 @@ class Game extends React.Component {
       this.updateStats('currentStreak', 0);
     }
     this.updateStats('accuracy', (1 - (this.totalMistakes / this.totalKeystrokes)) * 100);
-    console.log(this.state.stats.accuracy);
   }
 
   queueNextWave() {
@@ -186,7 +186,7 @@ class Game extends React.Component {
           score: 0,
           currentStreak: 0,
           longestStreak: 0,
-          accuracy: 'N/A%'
+          accuracy: 100
         }
       });
     }
@@ -310,6 +310,7 @@ class Game extends React.Component {
           {message}
           {enemies}
         </TransitionGroup>
+        <Hud grabStats={this.grabStats}/>
       </div>
     )
   }

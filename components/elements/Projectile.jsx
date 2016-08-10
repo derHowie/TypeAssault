@@ -78,17 +78,17 @@ class Projectile extends React.Component {
 
     this.animateExplosion(
       $('[data-explosion=\"' + this.rocketIndex.toString() + 0 + '\"]'),
-      'yellow',
+      '#00F94D',
       0
     );
     this.animateExplosion(
       $('[data-explosion=\"' + this.rocketIndex.toString() + 1 + '\"]'),
-      'orange',
+      '#0B9436',
       75
     );
     this.animateExplosion(
       $('[data-explosion=\"' + this.rocketIndex.toString() + 2 + '\"]'),
-      'red',
+      '#18DA54',
       150,
       this.props.removeRocket
     );
