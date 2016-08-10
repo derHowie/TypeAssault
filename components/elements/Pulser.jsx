@@ -27,7 +27,7 @@ class Pulser extends React.Component {
     clearInterval(this.spawningInterval);
     this.$container.stop();
     this.$container.fadeOut({
-      duration: 400,
+      duration: 600,
       easing: 'linear',
       complete: callback
     });

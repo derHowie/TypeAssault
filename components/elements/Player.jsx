@@ -7,21 +7,39 @@ class Player extends React.Component {
     super(props);
     this.state = {
       orientation: null,
-      projectiles: []
+      projectiles: [],
+      explosions: []
     };
+    this.$element = null;
 
     this.aim = this.aim.bind(this);
     this.fire = this.fire.bind(this);
     this.removeRocket = this.removeRocket.bind(this);
+    this.deathAnimation = this.deathAnimation.bind(this);
 
     this.props.TypeSwitch.on('targetAcquired', () => {
       this.aim();
       this.fire();
     });
+    this.props.TypeSwitch.on('gameOver', () => {
+      this.deathAnimation();
+    });
+  }
+
+  componentDidMount() {
+    this.$element = $('#player');
+    this.$element.animate({
+      top: '650px'
+    }, {
+      duration: 1000
+    });
+  }
+
+  componentWillLeave(callback) {
+    this.$element.fadeOut(1250, callback);
   }
 
   aim() {
-    var ship = document.getElementById('player');
     var target = document.querySelector(this.props.grabTarget());
     var xCoord = parseInt(target.style.left, 10);
     var yCoord = parseInt(target.style.top, 10);
@@ -29,8 +47,7 @@ class Player extends React.Component {
     var denominator = 650 - yCoord;
     var angleRad = (Math.atan(numerator / denominator));
     var angleDegree = ((angleRad * (180 / Math.PI))) - 90;
-    ship.style.transform = 'translateX(-50%) rotate(' + angleDegree + 'deg)';
-
+    this.$element.css('transform', 'translateX(-50%) rotate(' + angleDegree + 'deg)');
     this.setState({
       orientation: angleDegree
     });
@@ -63,16 +80,57 @@ class Player extends React.Component {
     });
   }
 
+  deathAnimation() {
+    var endGameExplosions = [];
+    var origin = {
+      x: 260,
+      y: 650
+    };
+    var colors = ['red', 'yellow', 'orange'];
+    for (var i = 0; i < 12; i++) {
+      var conflagration = (
+        <i
+          className="fa fa-circle conflagration"
+          data-conflagration={i}
+          key={'c' + i}
+        />
+      );
+      endGameExplosions.push(conflagration);
+    }
+    this.setState({
+      explosions: endGameExplosions
+    });
+    this.state.explosions.forEach((explosion, index) => {
+      setTimeout(() => {
+        $('[data-conflagration=\"' + index + '\"]').css({
+          left: origin.x + (Math.random() * 32) - 32 + 'px',
+          top: origin.y + (Math.random() * 25) - 25 + 'px',
+          color: colors[Math.floor(Math.random() * colors.length)]
+        })
+        .animate({
+          fontSize: 70,
+          opacity: 0
+        }, {
+          duration: 750
+        });
+      }, 50 * index);
+    });
+  }
+
   render() {
     var projectiles = this.state.projectiles.map((rocket) => {
       if (!rocket.isDead) {
         return rocket.component;
       }
     });
+    var explosions = this.state.explosions.map((explosion) => {
+      return explosion;
+    });
     return (
       <div>
         <i id="player" className="fa fa-space-shuttle"></i>
         {projectiles}
+        {explosions}
       </div>
     )
   }

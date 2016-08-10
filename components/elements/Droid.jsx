@@ -23,7 +23,7 @@ class Droid extends React.Component {
   componentWillLeave(callback) {
     this.$container.stop();
     this.$container.fadeOut({
-      duration: 400,
+      duration: 600,
       easing: 'linear',
       complete: callback
     });
@@ -62,8 +62,8 @@ class Droid extends React.Component {
       y: parseFloat(this.$container.css('top'), 10)
     };
 
-    if (containerCoords.x > 245 && containerCoords.x < 255) {
-      if (containerCoords.y > 640) {
+    if (containerCoords.x > 240 && containerCoords.x < 260) {
+      if (containerCoords.y > 605) {
         this.props.endGame();
       }
     }

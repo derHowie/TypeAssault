@@ -16,7 +16,8 @@ class Game extends React.Component {
     this.state = {
       enemies: [],
       waveLaunching: false,
-      gameOver: false
+      gameOver: false,
+      gameCounter: 0
     };
     this.currentEnemy = null;
     this.currentEnemyIndex = null;
@@ -47,6 +48,7 @@ class Game extends React.Component {
       helpers.changeLetterColor(this.currentEnemy.wordIdentifier, this.TypeSwitch.getGameStats().currentIndex);
     });
     this.TypeSwitch.on('complete', () => {
+
       this.removeEnemy();
       var remainingEnemies = this.state.enemies.filter((enemy) => {
         return !enemy.isDead;
@@ -235,6 +237,7 @@ class Game extends React.Component {
   endGame() {
     document.removeEventListener('keypress', this.findWord);
     this.messageType = 'gameOver';
+    this.TypeSwitch.broadcast('gameOver');
     this.setState({
       enemies: [],
       waveLaunching: false,
@@ -243,6 +246,13 @@ class Game extends React.Component {
   }
 
   render() {
+    var player = this.state.gameOver ? null : (
+      <Player
+        TypeSwitch={this.TypeSwitch}
+        grabTarget={this.grabEnemyContainer}
+        removeEnemy={this.removeEnemy}
+        key={this.state.gameCounter}/>
+    );
     var message = this.state.waveLaunching ? null : (
       <Message
         queueNextWave={this.queueNextWave}
@@ -255,12 +265,9 @@ class Game extends React.Component {
     return (
       <div id="gameWrapper">
         <TransitionGroup>
+          {player}
           {message}
           {enemies}
-          <Player
-            TypeSwitch={this.TypeSwitch}
-            grabTarget={this.grabEnemyContainer}
-            removeEnemy={this.removeEnemy}/>
         </TransitionGroup>
       </div>
     )

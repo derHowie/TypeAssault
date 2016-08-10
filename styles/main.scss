@@ -27,7 +27,7 @@
 #player {
   color: rgb(0, 145, 255);
   position: absolute;
-  top: 650px;
+  top: 750px;
   font-size: 34px;
   left: 50%;
   transform: translateX(-50%) rotate(-90deg);
@@ -73,6 +73,14 @@
 }
 
 .explosion {
+  font-size: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-50%);
+}
+
+.conflagration {
   font-size: 0;
   position: absolute;
   top: 0;

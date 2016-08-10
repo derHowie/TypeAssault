@@ -42,8 +42,8 @@ class Projectile extends React.Component {
   animateExplosion($el, color, delay, callback) {
     setTimeout(() => {
       $el.css({
-        left: this.targetCoords.x + (Math.random() * 20) - 20 + 'px',
-        top: this.targetCoords.y + (Math.random() * 20) + 15 + 'px',
+        left: this.targetCoords.x + (Math.random() * 20) - 14 + 'px',
+        top: this.targetCoords.y + (Math.random() * 20) + 18 + 'px',
         color: color
       })
       .animate({
@@ -60,7 +60,7 @@ class Projectile extends React.Component {
     }, delay);
   }
 
-  appendExplosions(coords) {
+  appendExplosions() {
     var adjustedExplosionArray = [];
     for (var i = 0; i < 3; i++) {
       var explosion =
