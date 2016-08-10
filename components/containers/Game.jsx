@@ -14,20 +14,22 @@ class Game extends React.Component {
   constructor() {
     super();
     this.state = {
+      stats: {
+        score: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        accuracy: 'N/A%'
+      },
       enemies: [],
-      waveLaunching: false,
-      gameOver: false
+      waveLaunching: false
     };
     this.currentEnemy = null;
     this.currentEnemyIndex = null;
     this.letters = 'abcdefghijklmnopqrstuvwxyz';
     this.waveCount = 0;
-    this.score = 0;
-    this.accuracy = null;
-    this.currentStreak = 0;
-    this.highStreak = 0;
-    this.clock = 0;
     this.messageType = 'startGame';
+    this.totalKeystrokes = 0;
+    this.totalMistakes = 0;
 
     this.launchWave = this.launchWave.bind(this);
     this.populateWave = this.populateWave.bind(this);
@@ -35,19 +37,32 @@ class Game extends React.Component {
     this.findWord = this.findWord.bind(this);
     this.queueNextWave = this.queueNextWave.bind(this);
     this.removeEnemy = this.removeEnemy.bind(this);
+    this.updateStats = this.updateStats.bind(this);
     this.addEnemy = this.addEnemy.bind(this);
     this.concludePath = this.concludePath.bind(this);
+    this.grabStats = this.grabStats.bind(this);
     this.grabEnemyContainer = this.grabEnemyContainer.bind(this);
     this.grabEnemies = this.grabEnemies.bind(this);
     this.endGame = this.endGame.bind(this);
 
     this.TypeSwitch = new TypeSwitch({stubbornMode: true});
+    this.TypeSwitch.on('incorrect', () => {
+      this.totalKeystrokes++;
+      this.totalMistakes++;
+      this.updateStats('accuracy', (1 - (this.totalMistakes / this.totalKeystrokes)) * 100);
+      this.updateStats('score', this.state.stats.score > 0 ? this.state.stats.score - 25 : 0);
+      this.updateStats('currentStreak', 0);
+    });
     this.TypeSwitch.on('correct', () => {
+      this.totalKeystrokes++;
+      this.updateStats('accuracy', (1 - (this.totalMistakes / this.totalKeystrokes)) * 100);
+      this.updateStats('currentStreak', this.state.stats.currentStreak + 1);
+      this.updateStats('longestStreak', this.state.stats.currentStreak > this.state.stats.longestStreak ? this.state.stats.currentStreak : this.state.stats.longestStreak);
+
       this.TypeSwitch.broadcast('targetAcquired');
       helpers.changeLetterColor(this.currentEnemy.wordIdentifier, this.TypeSwitch.getGameStats().currentIndex);
     });
     this.TypeSwitch.on('complete', () => {
-
       this.removeEnemy();
       var remainingEnemies = this.state.enemies.filter((enemy) => {
         return !enemy.isDead;
@@ -136,9 +151,12 @@ class Game extends React.Component {
   findWord(e) {
     var pressedCharCode = (typeof e.which === 'number') ? e.which : e.keyCode;
 		var pressedKeyChar = String.fromCharCode(pressedCharCode);
+    var wordFound = false;
+    this.totalKeystrokes++;
 
     this.state.enemies.forEach((enemy, index) => {
       if (enemy.word.charAt(0) === pressedKeyChar && !enemy.isDead && parseInt($(enemy.containerIdentifier).css('top'), 10) > 5) {
+        wordFound = true;
         this.currentEnemyIndex = index;
         this.currentEnemy = enemy;
         this.TypeSwitch.changeCurrentIndex(1);
@@ -148,25 +166,30 @@ class Game extends React.Component {
         document.removeEventListener('keypress', this.findWord);
       }
     });
+
+    if (wordFound) {
+      this.updateStats('currentStreak', this.state.stats.currentStreak + 1);
+    } else {
+      this.totalMistakes++;
+      this.updateStats('score', this.state.stats.score - 25);
+      this.updateStats('currentStreak', 0);
+    }
+    this.updateStats('accuracy', (1 - (this.totalMistakes / this.totalKeystrokes)) * 100);
+    console.log(this.state.stats.accuracy);
   }
 
   queueNextWave() {
-    if (this.state.gameOver) {
-      this.currentEnemy = null;
-      this.currentEnemyIndex = null;
-      this.letters = 'abcdefghijklmnopqrstuvwxyz';
-      this.waveCount = 0;
-      this.score = 0;
-      this.accuracy = null;
-      this.currentStreak = 0;
-      this.highStreak = 0;
-      this.clock = 0;
-    }
-
     if (!this.waveCount) {
       this.TypeSwitch.broadcast('gameStart');
+      this.setState({
+        stats: {
+          score: 0,
+          currentStreak: 0,
+          longestStreak: 0,
+          accuracy: 'N/A%'
+        }
+      });
     }
-
     this.waveCount++;
     this.messageType = 'nextWave';
     this.setState({
@@ -175,8 +198,7 @@ class Game extends React.Component {
     setTimeout(() => {
       this.setState({
         enemies: [],
-        waveLaunching: true,
-        gameOver: false
+        waveLaunching: true
       });
       this.launchWave();
     }, 1000);
@@ -187,7 +209,9 @@ class Game extends React.Component {
     helpers.changeLetterColor(this.currentEnemy.wordIdentifier, this.TypeSwitch.getGameStats().currentIndex);
 
     var adjustedEnemyArray = this.state.enemies;
-    adjustedEnemyArray[this.currentEnemyIndex].isDead = true;
+    var adjustedEnemy = adjustedEnemyArray[this.currentEnemyIndex];
+    adjustedEnemy.isDead = true;
+    this.updateStats('score', adjustedEnemy.word.length > 3 ? this.state.stats.score + 200 : this.state.stats.score + 100);
     this.setState({
       enemies: adjustedEnemyArray
     });
@@ -195,6 +219,14 @@ class Game extends React.Component {
     this.currentEnemy = null;
     this.currentEnemyIndex = null;
     this.TypeSwitch.resetGame();
+  }
+
+  updateStats(key, value) {
+    var adjustedStats = this.state.stats;
+    adjustedStats[key] = value;
+    this.setState({
+      stats: adjustedStats
+    });
   }
 
   addEnemy(enemy) {
@@ -229,6 +261,10 @@ class Game extends React.Component {
     }
   }
 
+  grabStats() {
+    return this.state.stats;
+  }
+
   grabEnemyContainer() {
     return this.currentEnemy.containerIdentifier;
   }
@@ -239,12 +275,17 @@ class Game extends React.Component {
 
   endGame() {
     document.removeEventListener('keypress', this.findWord);
+    this.currentEnemy = null;
+    this.currentEnemyIndex = null;
+    this.letters = 'abcdefghijklmnopqrstuvwxyz';
+    this.waveCount = 0;
     this.messageType = 'gameOver';
+    this.totalMistakes = 0;
+    this.totalKeystrokes = 0;
     this.TypeSwitch.broadcast('gameOver');
     this.setState({
       enemies: [],
-      waveLaunching: false,
-      gameOver: true
+      waveLaunching: false
     });
   }
 
@@ -253,7 +294,8 @@ class Game extends React.Component {
       <Message
         queueNextWave={this.queueNextWave}
         messageType={this.messageType}
-        count={this.waveCount}/>
+        count={this.waveCount}
+        grabStats={this.grabStats}/>
     );
     var enemies = this.state.enemies.map((enemy) => {
       return enemy.isDead ? null : enemy.component;

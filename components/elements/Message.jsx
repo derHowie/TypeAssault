@@ -4,12 +4,22 @@ import React from 'react';
 class Message extends React.Component {
   constructor(props) {
     super(props);
+    this.$container = null;
 
     this.handleClick = this.handleClick.bind(this);
   }
 
+  componentDidMount() {
+    this.$container = $('#messageContainer');
+    this.$container.animate({
+      opacity: 1
+    }, {
+      duration: 750
+    });
+  }
+
   componentWillLeave(callback) {
-    $('#messageContainer').animate({
+    this.$container.animate({
       top: '200px',
       opacity: 0
     }, {
@@ -19,7 +29,15 @@ class Message extends React.Component {
   }
 
   handleClick() {
-    this.props.queueNextWave();
+    this.$container.animate({
+      top: '200px',
+      opacity: 0
+    }, {
+      duration: 600,
+      complete: () => {
+        this.props.queueNextWave();
+      }
+    });
   }
 
   render() {
@@ -44,9 +62,16 @@ class Message extends React.Component {
         );
         break;
       case 'gameOver':
+        var stats = this.props.grabStats();
+        var score = 'score: ' + stats.score;
+        var accuracy = 'accuracy: ' + stats.accuracy.toString().slice(0, 6) + '%';
+        var longestStreak = 'longest streak: ' + stats.longestStreak;
         message = (
           <div>
             <h1>Game Over</h1>
+            <h3>{score}</h3>
+            <h3>{accuracy}</h3>
+            <h3>{longestStreak}</h3>
             <button id="start" onClick={() => {this.handleClick()}}>
               Play Again
             </button>
@@ -65,7 +90,8 @@ class Message extends React.Component {
 Message.propTypes = {
   queueNextWave: React.PropTypes.func.isRequired,
   messageType: React.PropTypes.string.isRequired,
-  count: React.PropTypes.number.isRequired
+  count: React.PropTypes.number.isRequired,
+  grabStats: React.PropTypes.func.isRequired
 };
 
 export default Message;
