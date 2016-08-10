@@ -35,5 +35,12 @@ module.exports = {
             }
     ]
   },
-  plugins: [HtmlWebpackConfig]
+  plugins: [
+    HtmlWebpackConfig,
+    new webpack.DefinePlugin({
+    'process.env': {
+      'NODE_ENV': JSON.stringify('production')
+    }
+  })
+  ]
 }
