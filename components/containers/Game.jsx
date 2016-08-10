@@ -16,8 +16,7 @@ class Game extends React.Component {
     this.state = {
       enemies: [],
       waveLaunching: false,
-      gameOver: false,
-      gameCounter: 0
+      gameOver: false
     };
     this.currentEnemy = null;
     this.currentEnemyIndex = null;
@@ -164,6 +163,10 @@ class Game extends React.Component {
       this.clock = 0;
     }
 
+    if (!this.waveCount) {
+      this.TypeSwitch.broadcast('gameStart');
+    }
+
     this.waveCount++;
     this.messageType = 'nextWave';
     this.setState({
@@ -246,13 +249,6 @@ class Game extends React.Component {
   }
 
   render() {
-    var player = this.state.gameOver ? null : (
-      <Player
-        TypeSwitch={this.TypeSwitch}
-        grabTarget={this.grabEnemyContainer}
-        removeEnemy={this.removeEnemy}
-        key={this.state.gameCounter}/>
-    );
     var message = this.state.waveLaunching ? null : (
       <Message
         queueNextWave={this.queueNextWave}
@@ -265,7 +261,10 @@ class Game extends React.Component {
     return (
       <div id="gameWrapper">
         <TransitionGroup>
-          {player}
+          <Player
+            TypeSwitch={this.TypeSwitch}
+            grabTarget={this.grabEnemyContainer}
+            removeEnemy={this.removeEnemy}/>
           {message}
           {enemies}
         </TransitionGroup>

@@ -21,6 +21,18 @@ class Player extends React.Component {
       this.aim();
       this.fire();
     });
+    this.props.TypeSwitch.on('gameStart', () => {
+      this.$element.css({
+        opacity: 1,
+        display: 'block',
+        transform: 'translateX(-50%) rotate(-90deg)'
+      })
+      .animate({
+        top: '650px'
+      }, {
+        duration: 750
+      });
+    });
     this.props.TypeSwitch.on('gameOver', () => {
       this.deathAnimation();
     });
@@ -28,15 +40,6 @@ class Player extends React.Component {
 
   componentDidMount() {
     this.$element = $('#player');
-    this.$element.animate({
-      top: '650px'
-    }, {
-      duration: 1000
-    });
-  }
-
-  componentWillLeave(callback) {
-    this.$element.fadeOut(1250, callback);
   }
 
   aim() {
@@ -101,6 +104,7 @@ class Player extends React.Component {
       explosions: endGameExplosions
     });
     this.state.explosions.forEach((explosion, index) => {
+      this.$element.fadeOut(2000);
       setTimeout(() => {
         $('[data-conflagration=\"' + index + '\"]').css({
           left: origin.x + (Math.random() * 32) - 32 + 'px',
@@ -111,7 +115,15 @@ class Player extends React.Component {
           fontSize: 70,
           opacity: 0
         }, {
-          duration: 750
+          duration: 750,
+          complete: () => {
+            if (index > 10) {
+              this.$element.css('top', '750px');
+              this.setState({
+                explosions: []
+              });
+            }
+          }
         });
       }, 50 * index);
     });
