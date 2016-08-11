@@ -3,7 +3,7 @@
 export default function waves(waveNum) {
   var waveArray = [];
   var enemyCount = waveNum + 7 > 17 ? 17 : waveNum + 7;
-  var specialEnemyProb = .05 * waveNum;
+  var specialEnemyProb = .03 * waveNum;
 
   for (var i = 0; i < enemyCount; i++) {
     var enemy = {
