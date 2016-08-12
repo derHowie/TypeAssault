@@ -280,13 +280,13 @@ class Game extends React.Component {
     this.letters = 'abcdefghijklmnopqrstuvwxyz';
     this.waveCount = 0;
     this.messageType = 'gameOver';
-    this.totalMistakes = 0;
-    this.totalKeystrokes = 0;
     this.TypeSwitch.broadcast('gameOver');
     this.setState({
       enemies: [],
       waveLaunching: false
     });
+    this.totalMistakes = 0;
+    this.totalKeystrokes = 0;
   }
 
   render() {

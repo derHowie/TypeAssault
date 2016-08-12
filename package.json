@@ -1,7 +1,7 @@
 {
   "name": "react-template",
   "version": "1.0.0",
-  "description": "simple react setup with babel/webpack/sass/ava",
+  "description": "A typing game powered by type-switch",
   "main": "index.js",
   "scripts": {
     "test": "xo && ava",
@@ -12,17 +12,10 @@
     "type": "git",
     "url": "git+https://github.com/DerHowie/react-template.git"
   },
-  "keywords": [
-    "react",
-    "boilerplate",
-    "template"
-  ],
+  "keywords": [],
   "author": "Christopher Howard",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/DerHowie/react-template/issues"
-  },
-  "homepage": "https://github.com/DerHowie/react-template#readme",
+  "homepage": "https://github.com/DerHowie/TypeAssault#readme",
   "dependencies": {
     "axios": "latest",
     "react": "^15.3.0",
